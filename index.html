@@ -8,11 +8,15 @@
     <style type="text/css">
         html, body {
             margin: 0;
-            height: 100%
+            height: 100%;
+            overflow: hidden;
         }
 
         canvas {
             display: block;
+        }
+        #app{
+            position: relative;
         }
         #vdo{
             position: absolute;
@@ -30,6 +34,7 @@
             padding: 4px 15px;
             border: 1px solid gray;
             border-radius: 4px;
+            cursor: pointer;
         }
        .videoBox{
             position: absolute;
@@ -38,12 +43,46 @@
             left: 0;
             top: 0;
        }
+       .MessageBox{
+            position: absolute;
+            top: 350px;
+            right: -200px;
+            width:200px;
+            height: 250px;
+            background-color: rgb(68, 68, 68);
+            border-radius: 10px;
+            box-sizing: border-box;
+            padding: 30px 10px 10px;
+            opacity: 0.5;
+       }
+       .MessageBox > .Tips{
+            position: absolute;
+            left: 10px;
+            top:10px;
+            color: #fff;
+            font-size: 14px;
+            text-align: left;
+       }
+         .MessageBox-Info{
+            width: 100%;
+            height: 100%;
+            background-color: #fff;
+            border-radius: 5px;
+            box-sizing: border-box;
+         }
     </style>
 </head>
 
 <body>
-    <div id="vdo"
-        >
+    <div id="app">
+        <div class="MessageBox">
+            <div class="Tips">相关信息</div>
+            <div class="MessageBox-Info">
+
+            </div>
+        </div>
+    </div>
+    <div id="vdo">
         <button onclick="unshow()" type="button" class="LoginBtn">登录</button>
         <div class="videoBox">
             <video id="example_video" class="video-js vjs-default-skin vjs-big-play-centered" muted autoplay  preload="none" loop width="100%" height="100%" style="width: 100%;height:100%"
@@ -51,7 +90,6 @@
                <source src="./src/img/donghua/Scene1.mp4" type="video/mp4">
            </video>
         </div>
-        
     </div>
 </body>
 <script src="https://cdn.jsdelivr.net/npm/video.js@7.10.2/dist/video.min.js"></script>
@@ -59,17 +97,15 @@
 <script src="./build/OrbitControls.js"></script>
 <script src="./build/dat.gui.min.js"></script>
 <script src="./build/GLTFLoader.js"></script>
-
-
+<script src="https://cdn.staticfile.org/vue/2.2.2/vue.min.js"></script>
+<script src="index.js"></script>
 <script>
-
     let options = {};
     let PlayerItem 
     videojs("example_video").ready(function(){
         PlayerItem = this;
         this.play(); // 自动播放
     });
-
     var renderer, camera, scene, gui, light, stats, controls,object,mouse,flag=false;
     path_all_01=[
                 './src/model/ts/ts_test.gltf',
