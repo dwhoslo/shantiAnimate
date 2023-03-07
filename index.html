@@ -20,12 +20,23 @@
             height: 100%;
             z-index: 9999;
         }
+        .LoginBtn{
+            position: absolute;
+            bottom:50px;
+            left: 50%;
+            z-index: 9999999;
+            width: auto;
+            height: auto;
+            padding: 4px 15px;
+            border: 1px solid gray;
+            border-radius: 4px;
+        }
        .videoBox{
-        position: absolute;
-        width: 100%;
-        height: 100%;
-        left: 0;
-        top: 0;
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            left: 0;
+            top: 0;
        }
     </style>
 </head>
@@ -33,8 +44,7 @@
 <body>
     <div id="vdo"
         >
-        <button onclick="unshow()" style="position: absolute;
-        bottom: 10%; left: 50%; z-index: 9999999;">登录</button>
+        <button onclick="unshow()" type="button" class="LoginBtn">登录</button>
         <div class="videoBox">
             <video id="example_video" class="video-js vjs-default-skin vjs-big-play-centered" muted autoplay  preload="none" loop width="100%" height="100%" style="width: 100%;height:100%"
             data-setup="{}">
