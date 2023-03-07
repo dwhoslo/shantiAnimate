@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>山体</title>
+    <link href="https://cdn.jsdelivr.net/npm/video.js@7.10.2/dist/video-js.min.css" rel="stylesheet" />
+    <style type="text/css">
+        html, body {
+            margin: 0;
+            height: 100%
+        }
+
+        canvas {
+            display: block;
+        }
+        #vdo{
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            z-index: 9999;
+        }
+       
+    </style>
+</head>
+
+<body>
+    <div id="vdo"
+        >
+        <button onclick="unshow()" style="position: absolute;
+        bottom: 10%; left: 50%; z-index: 9999999;">登录</button>
+        <video id="myVideo" autoplay loop
+            class="video-js"
+            
+            preload="auto"
+            width="1920"
+            height="1080">
+            <source src="./src/img/donghua/Scene1.mp4" type="video/mp4">
+          </video>
+    </div>
+</body>
+<script src="https://cdn.jsdelivr.net/npm/video.js@7.10.2/dist/video.min.js"></script>
+<script src="./build/three.min.js"></script>
+<script src="./build/OrbitControls.js"></script>
+<script src="./build/dat.gui.min.js"></script>
+<script src="./build/GLTFLoader.js"></script>
+
+
+<script>
+
+let options = {};
+      let player = videojs('myVideo', options, function onPlayerReady() {
+        videojs.log('播放器准备好了!');
+
+        // In this context, `this` is the player that was created by Video.js.
+        this.play();
+
+        this.on('ended', function() {
+          videojs.log('播放结束!');
+        });
+      });
+    const video = document.getElementById("myVideo");
+    const vdo = document.getElementById("vdo");
+
+// video.addEventListener("click", () => {
+//   video.requestFullscreen();
+// });
+
+
+    var renderer, camera, scene, gui, light, stats, controls,object,mouse,flag=false;
+    path_all_01=[
+                './src/model/ts/ts_test.gltf',
+                './src/model/ss/ss_test01.gltf',
+                './src/model/hs/hs_test.gltf',
+                './src/model/hns/hns_test.gltf',
+                ];
+    path_all_02=[
+                './src/model/ts/ts_test.gltf',
+                './src/model/ss/ss_test02.gltf',
+                './src/model/hs/hs_test.gltf',
+                './src/model/hns/hns_test.gltf',
+                ];
+    model_path='./src/model/ss/ss_test01.gltf';//默认山体
+                
+    
+    function initRender() {
+        renderer = new THREE.WebGLRenderer({antialias: true});
+        renderer.setPixelRatio(window.devicePixelRatio);
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setClearColor(0xeeeeee);
+        renderer.shadowMap.enabled = true;
+        //告诉渲染器需要阴影效果
+        document.body.appendChild(renderer.domElement);
+    }
+
+    function initCamera() {
+        camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 10000);
+        camera.position.set(-400, 320, -500 );
+    }
+
+    function initScene() {
+        //给场景添加天空盒子纹理
+        scene = new THREE.Scene();
+        scene.background = 0Xfffffff;
+    }
+
+   //初始化dat.GUI简化试验流程
+   var gui;
+    function initGui() {
+        //声明一个保存需求修改的相关数据的对象
+        gui = {
+            mountainX:180, 
+            mountainY:0.5, 
+            mountainZ:120, 
+            mountainScale:0.15, 
+
+        //泰山01
+        createTs_01: function () {
+            model_path = path_all_01[0];
+            scene.remove(object);
+            initModel();
+        },
+        //嵩山01
+        createSs_01: function () {
+            model_path = path_all_01[1];
+            scene.remove(object);
+            initModel();
+        },
+        //恒山01
+        createHns_01: function () {
+            model_path = path_all_01[2];
+            scene.remove(object);
+            initModel();
+        },
+        //衡山01
+        createHs_01: function () {
+            model_path = path_all_01[3];
+            scene.remove(object);
+            initModel();
+        },
+
+        //泰山02
+        createTs_02: function () {
+            model_path = path_all_02[0];
+            scene.remove(object);
+            initModel();
+        },
+        //嵩山02
+        createSs_02: function () {
+            model_path = path_all_02[1];
+            scene.remove(object);
+            initModel();
+        },
+        //恒山02
+        createHns_02: function () {
+            model_path = path_all_02[2];
+            scene.remove(object);
+            initModel();
+        },
+        //衡山02
+        createHs_02: function () {
+            model_path = path_all_02[3];
+            scene.remove(object);
+            initModel();
+        },
+        
+        };
+        var datGui = new dat.GUI();
+        //将设置属性添加到gui当中，gui.add(对象，属性，最小值，最大值）
+
+        
+        //山体材质01的操作
+        var objectFolder = datGui.addFolder("山体材质01");
+        objectFolder.add(gui,"mountainX",-250,250).onChange(function (e) {
+            object.position.x = e;
+        });
+        objectFolder.add(gui,"mountainY",0,50).onChange(function (e) {
+            object.position.y = e;
+        });
+        objectFolder.add(gui,"mountainZ",-250,250).onChange(function (e) {
+            object.position.z = e;
+        });
+        objectFolder.add(gui,"mountainScale",0.01,1).onChange(function (e) {
+            object.scale.set(e, e, e);
+        });
+        objectFolder.add(gui, "createTs_01");
+        objectFolder.add(gui, "createSs_01");
+        objectFolder.add(gui, "createHns_01");
+        objectFolder.add(gui, "createHs_01");
+        
+        //山体材质02的操作
+        var objectFolder = datGui.addFolder("山体材质02");
+      
+        objectFolder.add(gui, "createTs_02");
+        objectFolder.add(gui, "createSs_02");
+        objectFolder.add(gui, "createHns_02");
+        objectFolder.add(gui, "createHs_02");
+        
+    }
+
+    function initLight() {
+        scene.add(new THREE.AmbientLight(0xffffff));
+
+        light = new THREE.DirectionalLight(0xffffff);
+        light.position.set(0, 20, -20 );
+
+        light.castShadow = true;
+        light.shadow.camera.top = 10;
+        light.shadow.camera.bottom = -10;
+        light.shadow.camera.left = -10;
+        light.shadow.camera.right = 10;
+
+        //告诉平行光需要开启阴影投射
+        light.castShadow = true;
+
+        //scene.add(light);
+    }
+
+    function initModel() {
+        var loader = new THREE.GLTFLoader();
+        loader.load(model_path, function (gltf) {
+        object = gltf.scene;
+        //场景中添加模型文件
+        scene.add(object);
+        object.traverse(function (gltf) {
+        if (gltf.isMesh) {
+            console.log(gltf.children.name);
+        //设置mesh的一些属性
+        }
+        }); 
+        //设置整体场景的比例
+        object.scale.set(1.5, 1.5, 1.5); 
+        object.position.set(0,0,0);
+        object.receiveShardow=true;
+        });
+    }
+   
+    function creatLuminous(){
+        // 创建发光材质
+        const glowMaterial = new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.5 });
+        const glowMesh = new THREE.Mesh(geometry, glowMaterial);
+        glowMesh.position.copy(object.position);
+        glowMesh.scale.multiplyScalar(1.2);
+        scene.add(glowMesh);
+
+        // 设置发光材质的参数
+        glowMaterial.side = THREE.BackSide;
+        glowMaterial.blending = THREE.AdditiveBlending;
+    }
+ 
+
+    function initControls() {
+
+        controls = new THREE.OrbitControls(camera, renderer.domElement);
+        //设置控制器的中心点
+        //controls.target.set( 0, 5, 0 );
+        // 如果使用animate方法时，将此函数删除
+        //controls.addEventListener( 'change', render );
+        // 使动画循环使用时阻尼或自转 意思是否有惯性
+        controls.enableDamping = true;
+        //动态阻尼系数 就是鼠标拖拽旋转灵敏度
+        //controls.dampingFactor = 0.25;
+        //是否可以缩放
+        controls.enableZoom = true;
+        //是否自动旋转
+        controls.autoRotate = true;
+        controls.autoRotateSpeed = 0.5;
+        //设置相机距离原点的最远距离
+        controls.minDistance = 1;
+        //设置相机距离原点的最远距离
+        controls.maxDistance = 2000;
+        //是否开启右键拖拽
+        controls.enablePan = true;
+    }
+
+    //窗口变动触发的函数
+    function onWindowResize() {
+
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+
+    }
+//
+    function animate() {
+        //更新控制器
+        controls.update();
+        renderer.render(scene, camera);
+        // 1、requestAnimationFrame 会把每一帧中的所有DOM操作集中起来，在一次重绘或回流中就完成，并且重绘或回流的时间间隔紧紧跟随浏览器的刷新频率，一般来说，这个频率为每秒60帧。
+        // 2、在隐藏或不可见的元素中，requestAnimationFrame将不会进行重绘或回流，这当然就意味着更少的的cpu，gpu和内存使用量。
+        requestAnimationFrame(animate);
+    }
+
+        
+        render();
+        function render() {
+        initGui();
+        initRender();
+        initScene();
+        initCamera();
+        initLight();
+        initModel();
+        initControls();
+        animate();
+        window.onresize = onWindowResize;
+}
+window.addEventListener('mousedown', mouseDown, false);
+     window.addEventListener('mousemove', mouseMove, false);
+    
+     function mouseDown(e,mouseX,mouseY){
+        if(document.getElementById('vdo').style.display==='none')
+            getIntersects(e);
+     }
+     function mouseMove(e,mouseX,mouseY){
+        // if(document.getElementById('vdo').style.display==='none')
+                // getIntersects(e);
+     }
+
+     // 获取与射线相交的对象数组
+function getIntersects(event) {
+    event.preventDefault();
+
+    // 声明 raycaster 和 mouse 变量
+    var raycaster = new THREE.Raycaster();
+    var mouse = new THREE.Vector2();
+
+    // 通过鼠标点击位置,计算出 raycaster 所需点的位置,以屏幕为中心点,范围 -1 到 1
+    mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+    mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+    //通过鼠标点击的位置(二维坐标)和当前相机的矩阵计算出射线位置
+    raycaster.setFromCamera(mouse, camera);
+
+    // 获取与raycaster射线相交的数组集合，其中的元素按照距离排序，越近的越靠前
+    var intersects = raycaster.intersectObject(object,true);
+    if(intersects.length>0){
+        console.log(object.children[0].name);
+        wireframe();
+    }
+    //返回选中的对象数组
+    return intersects;
+}
+ 
+        //网格
+function wireframe() {
+            flag=!flag;
+            if(flag){
+                object.traverse(function (gltf) {
+                    if (gltf.isMesh) {
+                        gltf.material.wireframe = true;
+                    //设置mesh的一些属性
+                    }
+                    })
+                }else{
+                    object.traverse(function (gltf) {
+                    if (gltf.isMesh) {
+                        gltf.material.wireframe = false;
+                    //设置mesh的一些属性
+                    }
+                    })
+                }
+            }
+
+function unshow (){
+    document.getElementById('vdo').style.display='none';
+}
+</script>
+</html>
