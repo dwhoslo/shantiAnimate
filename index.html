@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>山体</title>
     <link href="https://cdn.jsdelivr.net/npm/video.js@7.10.2/dist/video-js.min.css" rel="stylesheet" />
     <style type="text/css">
@@ -19,7 +20,13 @@
             height: 100%;
             z-index: 9999;
         }
-       
+       .videoBox{
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        left: 0;
+        top: 0;
+       }
     </style>
 </head>
 
@@ -28,14 +35,13 @@
         >
         <button onclick="unshow()" style="position: absolute;
         bottom: 10%; left: 50%; z-index: 9999999;">登录</button>
-        <video id="myVideo" autoplay loop
-            class="video-js"
-            
-            preload="auto"
-            width="1920"
-            height="1080">
-            <source src="./src/img/donghua/Scene1.mp4" type="video/mp4">
-          </video>
+        <div class="videoBox">
+            <video id="example_video" class="video-js vjs-default-skin vjs-big-play-centered" muted autoplay  preload="none" loop width="100%" height="100%" style="width: 100%;height:100%"
+            data-setup="{}">
+               <source src="./src/img/donghua/Scene1.mp4" type="video/mp4">
+           </video>
+        </div>
+        
     </div>
 </body>
 <script src="https://cdn.jsdelivr.net/npm/video.js@7.10.2/dist/video.min.js"></script>
@@ -47,24 +53,12 @@
 
 <script>
 
-let options = {};
-      let player = videojs('myVideo', options, function onPlayerReady() {
-        videojs.log('播放器准备好了!');
-
-        // In this context, `this` is the player that was created by Video.js.
-        this.play();
-
-        this.on('ended', function() {
-          videojs.log('播放结束!');
-        });
-      });
-    const video = document.getElementById("myVideo");
-    const vdo = document.getElementById("vdo");
-
-// video.addEventListener("click", () => {
-//   video.requestFullscreen();
-// });
-
+    let options = {};
+    let PlayerItem 
+    videojs("example_video").ready(function(){
+        PlayerItem = this;
+        this.play(); // 自动播放
+    });
 
     var renderer, camera, scene, gui, light, stats, controls,object,mouse,flag=false;
     path_all_01=[
@@ -361,6 +355,7 @@ function wireframe() {
 
 function unshow (){
     document.getElementById('vdo').style.display='none';
+    PlayerItem.pause();
 }
 </script>
 </html>
