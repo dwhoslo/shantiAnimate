@@ -5,23 +5,22 @@ let app = new Vue({
             ShowMessageInfo:'',
             MessageJsonData:{
                 '嵩山_bgis':{
-                    info:'hrfdt4353edfer643534'
+                    info:'嵩山'
                 },
                 '泰山_bgis':{
-                    info:'gdt435fdst43535werfwet'
+                    info:'泰山'
                 },
                 '衡山_bgis':{
-                    info:'4242342523rewr43534523'
+                    info:'衡山'
                 },
                 '恒山_bgis':{
-                    info:'1231254235312321432412'
+                    info:'恒山'
                 },
             }
         }
     },
     created() {
         window.SwitchInfo = this.SwitchInfo
-        this.ShowMessageInfo = this.MessageJsonData.songshan.info
     },
     methods: {
         SwitchInfo(e){
