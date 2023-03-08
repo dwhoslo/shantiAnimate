@@ -202,7 +202,7 @@ let options = {};
 
         light = new THREE.DirectionalLight(0xffffff);
         light.position.set(0, 20, -20 );
-
+        // light.insta
         light.castShadow = true;
         light.shadow.camera.top = 10;
         light.shadow.camera.bottom = -10;
@@ -212,7 +212,7 @@ let options = {};
         //告诉平行光需要开启阴影投射
         light.castShadow = true;
 
-        //scene.add(light);
+        scene.add(light);
     }
 
     function initModel() {
@@ -308,11 +308,21 @@ window.addEventListener('mousedown', mouseDown, false);
     
      function mouseDown(e,mouseX,mouseY){
         if(document.getElementById('vdo').style.display==='none')
-            getIntersects(e);
+            if(getIntersects(e).length>0)
+                {
+                    wireframe();
+                }
      }
      function mouseMove(e,mouseX,mouseY){
-        // if(document.getElementById('vdo').style.display==='none')
-                // getIntersects(e);
+        if(document.getElementById('vdo').style.display==='none')
+            if(getIntersects(e).length>0)
+                {
+                    //为模型添加外发光
+                    // add_fur_wireframe(object);
+                }else{
+                    // 停止外发光
+    
+                }
      }
 
      // 获取与射线相交的对象数组
@@ -331,10 +341,6 @@ function getIntersects(event) {
 
     // 获取与raycaster射线相交的数组集合，其中的元素按照距离排序，越近的越靠前
     var intersects = raycaster.intersectObject(object,true);
-    if(intersects.length>0){
-        console.log(object.children[0].name);
-        wireframe();
-    }
     //返回选中的对象数组
     return intersects;
 }
